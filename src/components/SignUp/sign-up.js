@@ -1,12 +1,38 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Form, Input, Button, Checkbox, Divider } from 'antd'
+import { useDispatch } from 'react-redux'
+import { Form, Input, Button, Checkbox, Divider, Alert, Spin } from 'antd'
 
+import useStateUser from '../../store/hooks'
+import { errorNull, fetchUserRegistration } from '../../store/userSlice'
 import classes from '../SignIn/sign-in.module.scss'
 
 export default function SignUp() {
-  return (
-    <Form layout="vertical" size="large" className={classes['ant-form']}>
+  const dispatch = useDispatch()
+  const { error, status, userData } = useStateUser()
+  console.log(status, error)
+
+  const userRegistration = (str) => {
+    const newUser = {
+      username: str.username.trim(),
+      email: str.email.trim(),
+      password: str.password.trim(),
+    }
+    dispatch(fetchUserRegistration(newUser))
+  }
+
+  const form = (
+    <Form
+      layout="vertical"
+      size="large"
+      className={classes['ant-form']}
+      initialValues={{
+        remember: true,
+      }}
+      onFinish={(val) => {
+        userRegistration(val)
+      }}
+    >
       <div className={classes['form-title']}>
         <span>Create new account</span>
       </div>
@@ -18,7 +44,7 @@ export default function SignUp() {
         rules={[
           {
             required: true,
-            message: 'Your username must be between 3 and 20 characters long.',
+            message: 'Your username must be 3 to 20 characters long.',
             min: 3,
             max: 20,
           },
@@ -64,13 +90,38 @@ export default function SignUp() {
         label="Repeat Password"
         dependencies={['password']}
         hasFeedback
+        rules={[
+          {
+            required: true,
+            message: 'Passwords must match',
+          },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue('password') === value) {
+                return Promise.resolve()
+              }
+
+              return Promise.reject(new Error('The passwords aren`t the same'))
+            },
+          }),
+        ]}
       >
         <Input.Password placeholder="Password" />
       </Form.Item>
 
       <Divider className={classes['ant-divider']} />
 
-      <Form.Item className={classes['ant-form-item']} name="agreement" valuePropName="checked">
+      <Form.Item
+        className={classes['ant-form-item']}
+        name="agreement"
+        valuePropName="checked"
+        rules={[
+          {
+            validator: (_, value) =>
+              value ? Promise.resolve() : Promise.reject(new Error('The agreement isn`t accepted')),
+          },
+        ]}
+      >
         <Checkbox>I agree to the processing of my personal information</Checkbox>
       </Form.Item>
       <Form.Item className={classes['ant-form-item-control-input-content']}>
@@ -78,9 +129,30 @@ export default function SignUp() {
           Create
         </Button>
         <span>
-          Don’t have an account? <Link to="/sign-in">Sign In</Link>.
+          Already have an account? <Link to="/sign-in">Sign In</Link>.
         </span>
       </Form.Item>
     </Form>
+  )
+
+  const onClose = () => {
+    dispatch(errorNull())
+  }
+
+  const spinner = <Spin size="large" className={classes['form-spinner']} />
+
+  const errorMessage = (
+    <Alert description="Whoops, something went wrong :(" type="error" showIcon closable onClose={onClose} />
+  )
+
+  const successMessage = <Alert description="Welcome to Realworld Blog!" closable />
+
+  return (
+    <div>
+      {form}
+      {status === 'loading' && spinner}
+      {error && errorMessage}
+      {userData && successMessage}
+    </div>
   )
 }

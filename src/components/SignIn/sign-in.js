@@ -1,12 +1,48 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Form, Input, Button } from 'antd'
+import { useDispatch } from 'react-redux'
+import { Form, Input, Button, Alert, Spin } from 'antd'
+
+import useStateUser from '../../store/hooks'
+import { fetchUserLogIn, errorNull } from '../../store/userSlice'
 
 import classes from './sign-in.module.scss'
 
 export default function SignIn() {
-  return (
-    <Form layout="vertical" name="normal_login" size="large" className={classes['ant-form']}>
+  const dispatch = useDispatch()
+  const { error, status, userData } = useStateUser()
+
+  useEffect(() => {
+    try {
+      if (userData !== null) {
+        localStorage.setItem('token', JSON.stringify(userData.token))
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }, [userData])
+
+  const userAuthorize = (str) => {
+    const registrationData = {
+      email: str.email.trim(),
+      password: str.password.trim(),
+    }
+    dispatch(fetchUserLogIn(registrationData))
+  }
+
+  const form = (
+    <Form
+      layout="vertical"
+      name="normal_login"
+      size="large"
+      className={classes['ant-form']}
+      initialValues={{
+        remember: true,
+      }}
+      onFinish={(val) => {
+        userAuthorize(val)
+      }}
+    >
       <div className={classes['form-title']}>
         <span>Sign In</span>
       </div>
@@ -48,5 +84,26 @@ export default function SignIn() {
         </span>
       </Form.Item>
     </Form>
+  )
+
+  const onClose = () => {
+    dispatch(errorNull())
+  }
+
+  const spinner = <Spin size="large" className={classes['form-spinner']} />
+
+  const errorMessage = (
+    <Alert description="Whoops, something went wrong :(" type="error" showIcon closable onClose={onClose} />
+  )
+
+  const successMessage = <Alert description="Welcome to Realworld Blog!" closable />
+
+  return (
+    <>
+      {form}
+      {status === 'loading' && spinner}
+      {error && errorMessage}
+      {userData && successMessage}
+    </>
   )
 }
