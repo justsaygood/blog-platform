@@ -1,15 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Checkbox, Divider, Alert, Spin } from 'antd'
 
-import useStateUser from '../../store/hooks'
 import { errorNull, fetchUserRegistration } from '../../store/userSlice'
 import classes from '../SignIn/sign-in.module.scss'
 
 export default function SignUp() {
   const dispatch = useDispatch()
-  const { error, status, userData } = useStateUser()
+  const { error, status, userData } = useSelector((state) => state.user)
   console.log(status, error)
 
   const userRegistration = (str) => {

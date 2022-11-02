@@ -54,7 +54,7 @@ export const fetchUserSave = createAsyncThunk('user/fetchUserSave', async (token
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
 
@@ -63,6 +63,30 @@ export const fetchUserSave = createAsyncThunk('user/fetchUserSave', async (token
     return rejectWithValue(err.message)
   }
 })
+
+export const fetchUserUpdate = createAsyncThunk(
+  'user/fetchUserUpdate',
+  async ({ newUser, token }, { rejectWithValue }) => {
+    const url = new URL(`${baseURL}/user`)
+    try {
+      const body = {
+        user: newUser,
+      }
+      const response = await fetch(url, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      return response.json()
+    } catch (err) {
+      return rejectWithValue(err.message)
+    }
+  }
+)
 
 const userSlice = createSlice({
   name: 'user',

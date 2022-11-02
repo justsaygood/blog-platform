@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Form, Input, Button, Alert, Spin } from 'antd'
 
-import useStateUser from '../../store/hooks'
 import { fetchUserLogIn, errorNull } from '../../store/userSlice'
 
 import classes from './sign-in.module.scss'
 
 export default function SignIn() {
   const dispatch = useDispatch()
-  const { error, status, userData } = useStateUser()
+  const { error, status, userData } = useSelector((state) => state.user)
 
   useEffect(() => {
     try {

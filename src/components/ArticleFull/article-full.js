@@ -4,7 +4,7 @@ import { Button, Modal } from 'antd'
 import { ExclamationCircleFilled, HeartOutlined } from '@ant-design/icons'
 
 import user from '../../assets/user.png'
-import css from '../Articles/articles.module.scss'
+import css from '../Article/article.module.scss'
 
 import classes from './article-full.module.scss'
 

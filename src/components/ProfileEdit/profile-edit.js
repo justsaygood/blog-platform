@@ -1,11 +1,72 @@
-import React from 'react'
-import { Form, Input, Button } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Form, Input, Button, Spin, Alert } from 'antd'
 
+import { fetchUserUpdate, errorNull } from '../../store/userSlice'
 import classes from '../SignIn/sign-in.module.scss'
 
 export default function ProfileEdit() {
-  return (
-    <Form name="dynamic_form_item" layout="vertical" size="large" className={classes['ant-form']}>
+  const dispatch = useDispatch()
+  const { error, status, userData } = useSelector((state) => state.user)
+
+  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
+  const [token, setToken] = useState('')
+
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  useEffect(() => {
+    if (userData) {
+      setEmail(userData.email)
+      setUsername(userData.username)
+      setToken(userData.token)
+    }
+
+    if (status === 'loading') {
+      setIsSuccess(false)
+    }
+  }, [status, userData])
+
+  const editProfile = (str) => {
+    const newUser = { ...userData }
+    Object.keys(str).forEach((prop) => {
+      newUser[prop] = str[prop]
+    })
+
+    dispatch(fetchUserUpdate({ newUser, token })).then((res) => {
+      try {
+        localStorage.removeItem('token')
+        localStorage.setItem('token', JSON.stringify(res.payload.user.token))
+        setIsSuccess(true)
+      } catch (err) {
+        setIsSuccess(false)
+        console.log(err)
+      }
+    })
+  }
+
+  const data = useState([
+    {
+      name: ['username'],
+      value: username || '',
+    },
+    {
+      name: ['email'],
+      value: email || '',
+    },
+  ])
+
+  const profileForm = (
+    <Form
+      name="dynamic_form_item"
+      layout="vertical"
+      size="large"
+      className={classes['ant-form']}
+      onFinish={(val) => {
+        editProfile(val)
+      }}
+      data={data}
+    >
       <div className={classes['form-title']}>
         <span>Edit Profile</span>
       </div>
@@ -76,5 +137,26 @@ export default function ProfileEdit() {
         </Button>
       </Form.Item>
     </Form>
+  )
+
+  const onClose = () => {
+    dispatch(errorNull())
+  }
+
+  const spinner = <Spin size="large" className={classes['form-spinner']} />
+
+  const errorMessage = (
+    <Alert description="Whoops, something went wrong :(" type="error" showIcon closable onClose={onClose} />
+  )
+
+  const successMessage = <Alert description="Welcome to Realworld Blog!" closable />
+
+  return (
+    <>
+      {profileForm}
+      {status === 'loading' && spinner}
+      {error && errorMessage}
+      {isSuccess && successMessage}
+    </>
   )
 }

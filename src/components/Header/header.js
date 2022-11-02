@@ -1,16 +1,20 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button } from 'antd'
 
-// import useStateUser from '../../store/hooks'
 import { logOutUser } from '../../store/userSlice'
 import classes from '../App/app.module.scss'
 import selfie from '../../assets/user.png'
 
 export default function Header() {
   const dispatch = useDispatch()
-  // const { userData } = useStateUser()
+  const { userData } = useSelector((state) => state.user)
+  console.log(userData)
+
+  // const { image } = userData
+
+  // const avatar = image === 'null' ? selfie : image
 
   const logOut = () => {
     try {
@@ -54,7 +58,7 @@ export default function Header() {
       <h1>
         <Link to="/">Realworld Blog</Link>
       </h1>
-      userData ? {buttonsUser} : {buttons}
+      {userData ? buttonsUser : buttons}
     </header>
   )
 }
