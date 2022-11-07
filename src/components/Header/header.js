@@ -10,7 +10,7 @@ import selfie from '../../assets/user.png'
 export default function Header() {
   const dispatch = useDispatch()
   const { userData } = useSelector((state) => state.user)
-  console.log(userData)
+  // console.log(userData)
 
   // const { image } = userData
 

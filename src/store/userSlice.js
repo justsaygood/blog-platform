@@ -29,19 +29,20 @@ export const fetchUserRegistration = createAsyncThunk(
 export const fetchUserLogIn = createAsyncThunk('user/fetchUserLogIn', async (newUser, { rejectWithValue }) => {
   const url = new URL(`${baseURL}/users/login`) // existing user login
   try {
-    const body = {
-      user: newUser,
-    }
-    const headers = {
-      'Content-Type': 'application/json;charset=utf-8',
-    }
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(body),
-      headers,
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({ user: newUser }),
     })
+    if (!response.ok) {
+      throw new Error('Data fetching failed')
+    }
 
-    return response.json()
+    response = await response.json()
+    return response
   } catch (err) {
     return rejectWithValue(err.message)
   }
@@ -54,7 +55,7 @@ export const fetchUserSave = createAsyncThunk('user/fetchUserSave', async (token
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Token ${token}`,
       },
     })
 
@@ -77,7 +78,7 @@ export const fetchUserUpdate = createAsyncThunk(
         body: JSON.stringify(body),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Token ${token}`,
         },
       })
 

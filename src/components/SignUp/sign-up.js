@@ -9,7 +9,7 @@ import classes from '../SignIn/sign-in.module.scss'
 export default function SignUp() {
   const dispatch = useDispatch()
   const { error, status, userData } = useSelector((state) => state.user)
-  console.log(status, error)
+  // console.log(status, error)
 
   const userRegistration = (str) => {
     const newUser = {
@@ -28,8 +28,8 @@ export default function SignUp() {
       initialValues={{
         remember: true,
       }}
-      onFinish={(val) => {
-        userRegistration(val)
+      onFinish={(str) => {
+        userRegistration(str)
       }}
     >
       <div className={classes['form-title']}>
@@ -141,10 +141,17 @@ export default function SignUp() {
   const spinner = <Spin size="large" className={classes['form-spinner']} />
 
   const errorMessage = (
-    <Alert description="Whoops, something went wrong :(" type="error" showIcon closable onClose={onClose} />
+    <Alert
+      description="Whoops, something went wrong :("
+      type="error"
+      className={classes['form-alert']}
+      showIcon
+      closable
+      onClose={onClose}
+    />
   )
 
-  const successMessage = <Alert description="Welcome to Realworld Blog!" closable />
+  const successMessage = <Alert description="Welcome to Realworld Blog!" closable onClose={onClose} />
 
   return (
     <div>

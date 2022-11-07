@@ -13,7 +13,7 @@ export default function ProfileEdit() {
   const [username, setUsername] = useState('')
   const [token, setToken] = useState('')
 
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [isSuccess, setSuccess] = useState(false)
 
   useEffect(() => {
     if (userData) {
@@ -23,29 +23,29 @@ export default function ProfileEdit() {
     }
 
     if (status === 'loading') {
-      setIsSuccess(false)
+      setSuccess(false)
     }
   }, [status, userData])
 
-  const editProfile = (str) => {
+  const editProfile = (val) => {
     const newUser = { ...userData }
-    Object.keys(str).forEach((prop) => {
-      newUser[prop] = str[prop]
+    Object.keys(val).forEach((prop) => {
+      newUser[prop] = val[prop]
     })
 
     dispatch(fetchUserUpdate({ newUser, token })).then((res) => {
       try {
         localStorage.removeItem('token')
         localStorage.setItem('token', JSON.stringify(res.payload.user.token))
-        setIsSuccess(true)
+        setSuccess(true)
       } catch (err) {
-        setIsSuccess(false)
+        setSuccess(false)
         console.log(err)
       }
     })
   }
 
-  const data = useState([
+  const [data] = useState([
     {
       name: ['username'],
       value: username || '',
@@ -149,7 +149,7 @@ export default function ProfileEdit() {
     <Alert description="Whoops, something went wrong :(" type="error" showIcon closable onClose={onClose} />
   )
 
-  const successMessage = <Alert description="Welcome to Realworld Blog!" closable />
+  const successMessage = <Alert description="Your profile has been updated!" closable onClose={onClose} />
 
   return (
     <>

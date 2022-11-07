@@ -60,7 +60,7 @@
     display: flex;
     align-self: flex-start;
 
-    .article_meta {
+    .article-meta {
       display: inherit;
       flex-direction: column;
       flex-shrink: inherit;
@@ -90,7 +90,7 @@
     }
   }
 
-  &_tags {
+  &-tags {
     display: flex;
     flex-wrap: wrap;
     margin-top: 4px;
@@ -105,9 +105,15 @@
     span + span {
       margin-left: 8px;
     }
+
+    .article-tag {
+      border: 1px solid var(--text-color-alt);
+      border-radius: 2px;
+      background-color: var(--normal-color);
+    }
   }
 
-  &_description {
+  &-description {
     margin: 0;
     margin-top: 8px;
     font-size: 1.2rem;
@@ -116,7 +122,4 @@
     color: var(--text-color);
   }
 
-  .articles-pagination {
-
-  }
 }

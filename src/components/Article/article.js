@@ -52,7 +52,11 @@ export default function Article({ item }) {
 
   const avatar = authorAvatar === 'null' ? selfie : authorAvatar
 
-  const tags = tagList.map((tag) => <div key={nanoid()}>{tag}</div>)
+  const tags = tagList.map((tag) => (
+    <div key={nanoid()} className={classes['article-tag']}>
+      {tag}
+    </div>
+  ))
 
   return (
     <div className={classes.article}>

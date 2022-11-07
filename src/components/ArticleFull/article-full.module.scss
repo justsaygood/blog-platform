@@ -7,11 +7,16 @@
   padding: 26px 16px 52px;
   background-color: var(--block-background);
 
-  &_description {
+  .article-description {
     margin: {
       top: 16px;
       bottom: 0;
     }
+  }
+  .article-tag {
+    border: 1px solid var(--text-color-alt);
+    border-radius: 2px;
+    background-color: var(--normal-color);
   }
 }
 
@@ -56,8 +61,14 @@
     font-size: inherit;
   }
 
+  div + img {
+    margin-left: 12px;
+  }
+
   img {
-    width: 100%;
-    margin-bottom: 1em;
+    width: 46px;
+    height: 46px;
+    background-color: var(--normal-color);
+    border-radius: 50%;
   }
 }

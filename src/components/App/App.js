@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { Switch, Route } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Switch, Route, Redirect } from 'react-router-dom'
 
 import { fetchUserSave } from '../../store/userSlice'
 import Header from '../Header/header'
@@ -17,6 +17,7 @@ import classes from './app.module.scss'
 
 function App() {
   const dispatch = useDispatch()
+  const { userData } = useSelector((state) => state.user)
 
   useEffect(() => {
     try {
@@ -33,14 +34,14 @@ function App() {
       <Header />
       <section className={classes.main}>
         <Switch>
-          <Route path="/articles/:slug/edit" component={ArticleEdit} />
+          <Route path="/articles/:slug/edit">{userData ? <ArticleEdit /> : <Redirect to="/sign-in" />}</Route>
           <Route path="/articles/:slug" exact component={ArticleFull} />
           <Route path="/articles" exact component={ArticleList} />
           <Route path="/" exact component={ArticleList} />
-          <Route path="/new-article" component={ArticleCreate} />
+          <Route path="/new-article">{userData ? <ArticleCreate /> : <Redirect to="/sign-in" />}</Route>
           <Route path="/sign-in" component={SignIn} />
           <Route path="/sign-up" component={SignUp} />
-          <Route path="/profile" component={ProfileEdit} />
+          <Route path="/profile">{userData ? <ProfileEdit /> : <Redirect to="/sign-in" />}</Route>
         </Switch>
       </section>
     </div>

@@ -1,97 +1,78 @@
-import React from 'react'
-import { Form, Input, Button } from 'antd'
+import React, { useState } from 'react'
+import { Spin, Alert } from 'antd'
+
+import ArticleForm from '../article-form'
+import { apiService } from '../../../services/apiService'
 
 import classes from './article-create.module.scss'
 
-export default function ArticleCreate({ fields }) {
+export default function ArticleCreate() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [isSuccess, setSuccess] = useState(false)
+
+  const createArticle = (str) => {
+    const newArticle = {
+      title: str.title.trim(),
+      description: str.description.trim(),
+      body: str.body,
+      tagList: str.tagList.map((item) => item.trim()).filter((item) => item && item !== ''),
+    }
+    setLoading(true)
+
+    try {
+      apiService
+        .postCreateArticle(newArticle, JSON.parse(localStorage.getItem('token')))
+        .then((res) => {
+          if (res.article) {
+            setLoading(false)
+            setSuccess(true)
+            setError(false)
+          }
+
+          if (res.errors) {
+            setLoading(false)
+            setError(true)
+            console.log(`${res.errors.error.status} ${res.errors.message}`)
+          }
+        })
+        .catch(() => {
+          setLoading(false)
+          setError(true)
+        })
+    } catch (err) {
+      setLoading(false)
+      // console.log(err)
+    }
+    console.log(isSuccess)
+  }
+
+  const onClose = () => {
+    setSuccess(false)
+    setError(false)
+  }
+
+  const article = <ArticleForm transferData={createArticle} title="Create new article" />
+  const spinner = <Spin size="large" className={classes['form-spinner']} />
+
+  const errorMessage = (
+    <Alert
+      description="Data loading error. Please try reloading the page."
+      type="error"
+      showIcon
+      closable
+      onClose={onClose}
+    />
+  )
+
+  const successMessage = <Alert description="A new article was created successfully!" closable onClose={onClose} />
+
   return (
-    <Form size="large" name="dynamic_form_item" layout="vertical" className={classes['ant-form']} fields={fields}>
-      <div className={classes['form-title']}>
-        <span>Some Article title</span>
-      </div>
-      <Form.Item
-        className={classes['ant-form-item']}
-        name="title"
-        label="Title"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Input type="text" placeholder="Title" />
-      </Form.Item>
-
-      <Form.Item
-        className={classes['ant-form-item']}
-        name="description"
-        label="Short description"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Input type="text" placeholder="Short description" />
-      </Form.Item>
-
-      <Form.Item
-        className={classes['ant-form-item']}
-        name="body"
-        label="Text"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Input.TextArea type="text" placeholder="Text" className={classes['ant-input']} />
-      </Form.Item>
-
-      <div className={classes['form-item-list__wrapper']}>
-        <Form.List name="tagList">
-          {(fieldsList, { add, remove }) => (
-            <>
-              {fieldsList.map((field, index) => (
-                <Form.Item label={index === 0 ? 'Tags' : ''} className={classes['ant-form-item']} key={field.key}>
-                  {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                  <Form.Item {...field} noStyle>
-                    <Input placeholder="Tag" style={{ width: '40%' }} />
-                  </Form.Item>
-
-                  {fieldsList.length > 1 ? (
-                    <Button
-                      onClick={() => {
-                        remove(field.name)
-                      }}
-                      className={classes['form-item-list__del-button']}
-                    >
-                      Delete
-                    </Button>
-                  ) : null}
-                </Form.Item>
-              ))}
-
-              <Form.Item className={classes['form-item-list__add-button']}>
-                <Button
-                  type="dashed"
-                  onClick={() => {
-                    add()
-                  }}
-                >
-                  Add tag
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
-
-        <Form.Item className={classes['ant-form-item']}>
-          <Button type="primary" htmlType="submit" className={classes['form-item-list__send-button']}>
-            Send
-          </Button>
-        </Form.Item>
-      </div>
-    </Form>
+    <>
+      {loading && spinner}
+      {article}
+      {error && errorMessage}
+      {isSuccess && successMessage}
+    </>
   )
 }

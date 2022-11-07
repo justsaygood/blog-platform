@@ -44,7 +44,9 @@ export default function ArticleList() {
 
   const spinner = <Spin size="large" className={classes['form-spinner']} />
 
-  const errorMessage = <Alert description="Whoops, something went wrong :(" type="error" showIcon />
+  const errorMessage = (
+    <Alert description="Whoops, something went wrong :(" type="error" showIcon className={classes['form-alert']} />
+  )
 
   return (
     <>

@@ -22,11 +22,11 @@ export default function SignIn() {
   }, [userData])
 
   const userAuthorize = (str) => {
-    const registrationData = {
+    const data = {
       email: str.email.trim(),
       password: str.password.trim(),
     }
-    dispatch(fetchUserLogIn(registrationData))
+    dispatch(fetchUserLogIn(data))
   }
 
   const form = (
@@ -38,8 +38,8 @@ export default function SignIn() {
       initialValues={{
         remember: true,
       }}
-      onFinish={(val) => {
-        userAuthorize(val)
+      onFinish={(str) => {
+        userAuthorize(str)
       }}
     >
       <div className={classes['form-title']}>
@@ -92,10 +92,17 @@ export default function SignIn() {
   const spinner = <Spin size="large" className={classes['form-spinner']} />
 
   const errorMessage = (
-    <Alert description="Whoops, something went wrong :(" type="error" showIcon closable onClose={onClose} />
+    <Alert
+      className={classes['form-alert']}
+      description="Whoops, something went wrong :("
+      type="error"
+      showIcon
+      closable
+      onClose={onClose}
+    />
   )
 
-  const successMessage = <Alert description="Welcome to Realworld Blog!" closable />
+  const successMessage = <Alert className={classes['form-alert']} description="Welcome to Realworld Blog!" closable />
 
   return (
     <>

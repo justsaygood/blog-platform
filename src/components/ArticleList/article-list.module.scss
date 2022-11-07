@@ -3,7 +3,13 @@ ul, li {
 }
 
 .form-spinner {
-  position: fixed;
+  position: relative!important;
+  top: 50%;
+  left: 50%;
+}
+
+.form-alert {
+  position: relative;
   top: 50%;
   left: 50%;
 }
