@@ -50,7 +50,7 @@ function ArticleEdit() {
           setLoading(false)
           setSuccess(true)
 
-          updateFormData() // обновляет данные в форме
+          updateFormData()
         }
         if (res.errors) {
           setLoading(false)
@@ -112,7 +112,7 @@ function ArticleEdit() {
   return (
     <>
       {loading && spinner}
-      {!error && !spinner && form}
+      {form}
       {error && errorMessage}
       {isSuccess && successMessage}
     </>
