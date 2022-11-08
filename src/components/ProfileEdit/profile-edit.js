@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, Input, Button, Spin, Alert } from 'antd'
+import { Form, Input, Button, Spin, Alert, notification } from 'antd'
+import { SmileTwoTone } from '@ant-design/icons'
 
 import { fetchUserUpdate, errorNull } from '../../store/userSlice'
 import classes from '../SignIn/sign-in.module.scss'
@@ -27,6 +28,14 @@ export default function ProfileEdit() {
     }
   }, [status, userData])
 
+  const successMessage = () => {
+    notification.open({
+      message: 'Your profile has been updated!',
+      icon: <SmileTwoTone twoToneColor="#eb2f96" />,
+      duration: 8,
+    })
+  }
+
   const editProfile = (val) => {
     const newUser = { ...userData }
     Object.keys(val).forEach((prop) => {
@@ -38,6 +47,7 @@ export default function ProfileEdit() {
         localStorage.removeItem('token')
         localStorage.setItem('token', JSON.stringify(res.payload.user.token))
         setSuccess(true)
+        successMessage()
       } catch (err) {
         setSuccess(false)
         console.log(err)
@@ -149,14 +159,12 @@ export default function ProfileEdit() {
     <Alert description="Whoops, something went wrong :(" type="error" showIcon closable onClose={onClose} />
   )
 
-  const successMessage = <Alert description="Your profile has been updated!" closable onClose={onClose} />
-
   return (
     <>
       {profileForm}
       {status === 'loading' && spinner}
       {error && errorMessage}
-      {isSuccess && successMessage}
+      {isSuccess}
     </>
   )
 }

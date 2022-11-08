@@ -178,6 +178,24 @@ const userSlice = createSlice({
       state.status = 'rejected'
       state.error = action.payload
     },
+    [fetchUserUpdate.pending]: (state) => {
+      state.status = 'loading'
+      state.error = null
+    },
+    [fetchUserUpdate.fulfilled]: (state, action) => {
+      if (action.payload.user) {
+        state.status = 'resolved'
+        state.userData = action.payload.user
+        return
+      }
+      if (action.payload.errors) {
+        state.status = 'rejected'
+      }
+    },
+    [fetchUserUpdate.rejected]: (state, action) => {
+      state.status = 'rejected'
+      state.error = action.payload
+    },
   },
 })
 

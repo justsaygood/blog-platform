@@ -12,9 +12,7 @@ export default function Header() {
   const { userData } = useSelector((state) => state.user)
   // console.log(userData)
 
-  // const { image } = userData
-
-  // const avatar = image === 'null' ? selfie : image
+  const avatar = userData === null || !userData.image ? selfie : userData.image
 
   const logOut = () => {
     try {
@@ -32,8 +30,8 @@ export default function Header() {
       </Button>
       <Link to="/profile">
         <div className={classes.user}>
-          <span>John Doe</span>
-          <img src={selfie} alt="user selfie" />
+          <span>{userData ? userData.username : 'NinaNina'}</span>
+          <img src={avatar} alt="user selfie" />
         </div>
       </Link>
       <Button type="default" size="large" onClick={logOut}>

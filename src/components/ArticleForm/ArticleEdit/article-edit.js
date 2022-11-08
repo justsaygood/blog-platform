@@ -94,7 +94,7 @@ function ArticleEdit() {
     setError(false)
   }
 
-  const article = <ArticleForm title="Edit Article" fields={fields} transferData={articleUpdate} />
+  const form = <ArticleForm title="Edit Article" fields={fields} transferData={articleUpdate} />
 
   const spinner = <Spin size="large" className={classes['form-spinner']} />
 
@@ -112,7 +112,7 @@ function ArticleEdit() {
   return (
     <>
       {loading && spinner}
-      {!error && !spinner && article}
+      {!error && !spinner && form}
       {error && errorMessage}
       {isSuccess && successMessage}
     </>

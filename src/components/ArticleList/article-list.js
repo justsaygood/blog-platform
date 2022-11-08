@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Alert, Spin, Pagination } from 'antd'
 
 import { fetchArticlesByPage, paginationChange } from '../../store/articleSlice'
-import Article from '../Article/article'
+import ArticleItem from '../ArticleItem/article-item'
 
 import classes from './article-list.module.scss'
 
@@ -18,10 +18,10 @@ export default function ArticleList() {
   }, [currentPage])
 
   const articleList = articles && (
-    <ul>
+    <ul className={classes['articles-list']}>
       {articles.map((elem) => (
         <li key={elem.slug}>
-          <Article item={elem} />
+          <ArticleItem item={elem} />
         </li>
       ))}
     </ul>
